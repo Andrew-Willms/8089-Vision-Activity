@@ -6,6 +6,11 @@ import utilities
 
 
 
+# sudo apt update
+# sudo apt install python3-pip -y
+# sudo apt install python3-opencv -y
+# 45 vertical, 60 horizontal
+
 HORIZONTAL_RESOLUTION: int = 640
 VERTICAL_RESOLUTION: int = 480
 HALF_HORIZONTAL_RESOLUTION: int = HORIZONTAL_RESOLUTION / 2
@@ -42,6 +47,7 @@ def get_red_ball_camera_coords(frame: numpy.ndarray) -> tuple[float, float] | No
     lower_bound[2] = cv2.getTrackbarPos("min value", "Red")
     upper_bound[2] = cv2.getTrackbarPos("max value", "Red")
 
+    print(frame.size)
     frame_resized = cv2.resize(frame, (HORIZONTAL_RESOLUTION, VERTICAL_RESOLUTION))
     frame_hsv = cv2.cvtColor(frame_resized, cv2.COLOR_RGB2HSV)
     mask = cv2.inRange(frame_hsv, lower_bound, upper_bound)
