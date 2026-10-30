@@ -211,7 +211,8 @@ def get_ball_position(red_image_coords: tuple[float, float], green_image_coords:
         VERTICES,
         image_points,
         CAMERA_MATRIX,
-        DISTORTION_COEFFICIENTS
+        DISTORTION_COEFFICIENTS,
+        flags=cv2.SOLVEPNP_SQPNP
     )
 
     if not success:
