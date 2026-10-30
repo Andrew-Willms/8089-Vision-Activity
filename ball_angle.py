@@ -154,10 +154,10 @@ def main():
 
             cv2.circle(colorized_mask, (int(center[0]), int(center[1])), CIRCLE_RADIUS, CIRCLE_COLOR, CIRCLE_THICKNESS)
 
-            camera_angle: tuple[float, float] = get_ball_angle(center)
+            ball_angle: tuple[float, float] = get_ball_angle(center)
 
-            horizontal_angle_degrees: float = (camera_angle[0] / math.pi * 180)
-            vertical_angle_degrees: float = (camera_angle[1] / math.pi * 180)
+            horizontal_angle_degrees: float = (ball_angle[0] / math.pi * 180)
+            vertical_angle_degrees: float = (ball_angle[1] / math.pi * 180)
             angle_text: str = f"horizontal angle: {horizontal_angle_degrees:.0f}, vertical angle: {vertical_angle_degrees:.0f}"
             cv2.putText(colorized_mask, angle_text, TEXT_START_COORDINATES, FONT, FONT_SCALE, TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
 

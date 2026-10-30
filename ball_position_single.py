@@ -42,6 +42,8 @@ DISTORTION_COEFFICIENTS = numpy.array([
 
 # Ball Specs
 BALL_DIAMETER: float = 0.066 # m
+PIXEL_AREA_AT_1M: int = 1111
+DISTANCE_SCALING_FACTOR: float = (1.0 * 1111) / 
 
 # Center Indicator Parameters
 CIRCLE_COLOR: tuple[int, int, int] = (0, 0, 255)
@@ -128,13 +130,16 @@ def get_ball_angle(center: tuple[float, float]) -> tuple[float, float] | None:
 
 
 
-def get_ball_position(ball_pixel_area: float) -> float:
+def get_ball_position(ball_pixel_area: float, ball_angle: tuple[float, float]) -> float:
 
-    distance: float = BALL_DIAMETER * 0.5 * (F_X + F_Y) / ball_pixel_area
+    # Distance to the ball based on the pixel area of the ball at 1.0m and the inverse square law.
+    distance: float = 1.0 * math.sqrt(PIXEL_AREA_AT_1M / float)
 
+    x_distance: float = distance * math.tan(ball_angle[0])
+    y_distance: float = distance * math.tan(ball_angle[1])
 
+    return (x_distance, y_distance)
 
-    return 0.0
 
 
 
@@ -168,18 +173,17 @@ def main():
 
             center: tuple[float, float] = (result[0], result[1])
             area: float = result[2]
-            print(area)
 
             cv2.circle(colorized_mask, (int(center[0]), int(center[1])), CIRCLE_RADIUS, CIRCLE_COLOR, CIRCLE_THICKNESS)
 
-            camera_angle: tuple[float, float] = get_ball_angle(center)
+            ball_angle: tuple[float, float] = get_ball_angle(center)
 
-            horizontal_angle_degrees: float = (camera_angle[0] / math.pi * 180)
-            vertical_angle_degrees: float = (camera_angle[1] / math.pi * 180)
-            angle_text: str = f"horizontal angle: {horizontal_angle_degrees:.0f}, vertical angle: {vertical_angle_degrees:.0f}"
-            cv2.putText(colorized_mask, angle_text, TEXT_START_COORDINATES, FONT, FONT_SCALE, TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
+            ball_position: tuple[float, float] = get_ball_position(area, ball_angle)
 
-            #print(f"horizontal angle: {horizontal_angle_degrees:4.0f}, vertical angle {vertical_angle_degrees:4.0f}")
+            position_text: str = f"x distance: {ball_position[0]:.2f}, y distance: {ball_position[1]:.2f}"
+            cv2.putText(colorized_mask, position_text, TEXT_START_COORDINATES, FONT, FONT_SCALE, TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
+
+            print(f"x distance: {ball_position[0]:2.2f}, y distance: {ball_position[1]:2.2f}")
 
         else:
             print("Ball not found.")
