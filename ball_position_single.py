@@ -62,18 +62,18 @@ TEXT_IS_BOTTOM_LEFT_ORIGIN: bool = False
 
 # Initialize GUI
 cv2.namedWindow("Window")
-# cv2.createTrackbar("min hue", "Window", 0, 179, utilities.nothing)
-# cv2.createTrackbar("max hue", "Window", 179, 179, utilities.nothing)
-# cv2.createTrackbar("min saturation", "Window", 0, 255, utilities.nothing)
-# cv2.createTrackbar("max saturation", "Window", 255, 255, utilities.nothing)
-# cv2.createTrackbar("min value", "Window", 0, 255, utilities.nothing)
-# cv2.createTrackbar("max value", "Window", 255, 255, utilities.nothing)
-cv2.createTrackbar("min hue", "Window", 125, 179, utilities.nothing)
-cv2.createTrackbar("max hue", "Window", 138, 179, utilities.nothing)
-cv2.createTrackbar("min saturation", "Window", 155, 255, utilities.nothing)
-cv2.createTrackbar("max saturation", "Window", 229, 255, utilities.nothing)
-cv2.createTrackbar("min value", "Window", 140, 255, utilities.nothing)
+cv2.createTrackbar("min hue", "Window", 0, 179, utilities.nothing)
+cv2.createTrackbar("max hue", "Window", 179, 179, utilities.nothing)
+cv2.createTrackbar("min saturation", "Window", 0, 255, utilities.nothing)
+cv2.createTrackbar("max saturation", "Window", 255, 255, utilities.nothing)
+cv2.createTrackbar("min value", "Window", 0, 255, utilities.nothing)
 cv2.createTrackbar("max value", "Window", 255, 255, utilities.nothing)
+# cv2.createTrackbar("min hue", "Window", 125, 179, utilities.nothing)
+# cv2.createTrackbar("max hue", "Window", 138, 179, utilities.nothing)
+# cv2.createTrackbar("min saturation", "Window", 155, 255, utilities.nothing)
+# cv2.createTrackbar("max saturation", "Window", 229, 255, utilities.nothing)
+# cv2.createTrackbar("min value", "Window", 140, 255, utilities.nothing)
+# cv2.createTrackbar("max value", "Window", 255, 255, utilities.nothing)
 
 
 
