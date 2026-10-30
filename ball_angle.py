@@ -18,15 +18,26 @@ VERTICAL_RESOLUTION: int = 480
 HALF_HORIZONTAL_RESOLUTION: int = HORIZONTAL_RESOLUTION / 2
 HALF_VERTICAL_RESOLUTION: int = VERTICAL_RESOLUTION / 2
 
+F_X: float = 594.777
+F_Y: float = 594.449
+C_X: float = 323.116
+C_Y: float = 237.647
+
+K1: float = 0.026486
+K2: float = 0.11972
+P1: float = -0.0051909
+P2: float = -0.00071865
+K3: float = -1.0536
+
 # Camera Specs
 CAMERA_MATRIX = numpy.array([
-    [ 594.777,  0,       323.116 ],
-    [ 0,        594.449, 237.647 ],
-    [ 0,        0,       1       ]
+    [ F_X,  0,   C_X ],
+    [ 0,    F_Y, C_Y ],
+    [ 0,    0,   1   ]
 ], dtype=numpy.float64)
 
 DISTORTION_COEFFICIENTS = numpy.array([
-    0.026486, 0.11972, -0.0051909, -0.00071865, -1.0536
+    K1, K2, P1, P2, K3
 ], dtype=numpy.float64)
 
 # FOV
@@ -114,15 +125,11 @@ def get_ball_camera_coords(mask: numpy.ndarray) -> tuple[float, float] | None:
 
 def get_ball_angle(center: tuple[float, float]) -> tuple[float, float] | None:
 
-    horizontal_pixels_from_center: float = center[0] - HALF_HORIZONTAL_RESOLUTION # positive is to the right
-    distance_to_image_plane: float = HALF_HORIZONTAL_RESOLUTION / math.tan(HALF_HORIZONTAL_FOV) # tan=O/A -> A=O/tan
-    theta_horizontal: float = math.atan2(horizontal_pixels_from_center, distance_to_image_plane)
+    x: float = float(numpy.arctan((center[0] - C_X) / F_X)) * 180 / math.pi
 
-    vertical_pixels_from_center: float = -center[1] + HALF_VERTICAL_RESOLUTION # positive is towards the top
-    distance_to_image_plane: float = HALF_VERTICAL_RESOLUTION / math.tan(HALF_VERTICAL_FOV) # tan=O/A -> A=O/tan
-    theta_vertical: float = math.atan2(vertical_pixels_from_center, distance_to_image_plane)
+    y: float = -float(numpy.arctan((center[1] - C_Y) / F_Y)) * 180 / math.pi
 
-    return (theta_horizontal, theta_vertical)
+    return (x, y)
 
 
 
