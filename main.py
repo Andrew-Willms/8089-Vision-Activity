@@ -11,6 +11,8 @@ import utilities
 # sudo apt install python3-opencv -y
 # 45 vertical, 60 horizontal
 
+
+
 HORIZONTAL_RESOLUTION: int = 640
 VERTICAL_RESOLUTION: int = 480
 HALF_HORIZONTAL_RESOLUTION: int = HORIZONTAL_RESOLUTION / 2
@@ -47,10 +49,9 @@ def get_red_ball_camera_coords(frame: numpy.ndarray) -> tuple[float, float] | No
     lower_bound[2] = cv2.getTrackbarPos("min value", "Red")
     upper_bound[2] = cv2.getTrackbarPos("max value", "Red")
 
-    height, width, channels = frame.shape
-    print(f"Height: {height}, Width: {width}, Channels: {channels}")
-
-    frame_resized = cv2.resize(frame, (HORIZONTAL_RESOLUTION, VERTICAL_RESOLUTION))
+    # The actual resolution also happens to be 640x480 on the Acer Spin 713...
+    # So I don't need to resize the image, but this makes the program more portable.
+    frame_resized = cv2.resize(cv2.flip(frame, ), (HORIZONTAL_RESOLUTION, VERTICAL_RESOLUTION))
     frame_hsv = cv2.cvtColor(frame_resized, cv2.COLOR_RGB2HSV)
     mask = cv2.inRange(frame_hsv, lower_bound, upper_bound)
     colorized_mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)

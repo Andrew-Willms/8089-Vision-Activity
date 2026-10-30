@@ -1,5 +1,5 @@
 import cv2
-
+import math
 
 
 def nothing(x):
@@ -15,3 +15,8 @@ def contour_center(contour) -> tuple[int, int]:
         return 0, 0
 
     return int(moments["m10"] / moments["m00"]), int(moments["m01"] / moments["m00"])
+
+
+
+def diameter_of_circular_contour(contour) -> int:
+    return 2 * math.sqrt(cv2.contourArea(contour) / math.pi)
