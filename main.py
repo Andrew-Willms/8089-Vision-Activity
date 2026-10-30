@@ -136,7 +136,7 @@ def main():
 
         if (center != None):
 
-            cv2.circle(colorized_mask, center, CIRCLE_RADIUS, RED_COLOR, CIRCLE_THICKNESS)
+            cv2.circle(colorized_mask, center, CIRCLE_RADIUS, CIRCLE_COLOR, CIRCLE_THICKNESS)
 
             camera_angle: tuple[int, int] = get_ball_angle(center)
 
