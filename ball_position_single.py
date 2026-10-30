@@ -43,7 +43,6 @@ DISTORTION_COEFFICIENTS = numpy.array([
 # Ball Specs
 BALL_DIAMETER: float = 0.066 # m
 PIXEL_AREA_AT_1M: int = 1111
-DISTANCE_SCALING_FACTOR: float = (1.0 * 1111) / 
 
 # Center Indicator Parameters
 CIRCLE_COLOR: tuple[int, int, int] = (0, 0, 255)
