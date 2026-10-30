@@ -215,6 +215,9 @@ def get_ball_position(red_image_coords: tuple[float, float], green_image_coords:
 
 def world_position_to_camera_coord(position: tuple[float, float, float]) -> tuple[int, int]:
 
+    # invert y axis
+    position = (position[0], -position[1], position[2])
+
     points = numpy.array([position], dtype=numpy.float64)
 
     # The point is already in camera coordinates, so no additional rotation or translation is needed.
@@ -324,8 +327,9 @@ def main():
             cv2.putText(frame_copy, position_text, BOTTOM_TEXT_START_COORDINATES, FONT, FONT_SCALE, RED_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
 
             camera_position: tuple[int, int] = world_position_to_camera_coord(jig_position)
-            cv2.circle(frame_copy, camera_position, CIRCLE_RADIUS, WHITE_CIRCLE_COLOR, CIRCLE_THICKNESS)
 
+            if camera_position[0] > 0 and camera_position[0] < HORIZONTAL_RESOLUTION and camera_position[1] > 0 and camera_position[1] < VERTICAL_RESOLUTION:
+                cv2.circle(frame_copy, camera_position, CIRCLE_RADIUS, WHITE_CIRCLE_COLOR, CIRCLE_THICKNESS)
 
             print(f"x: {jig_position[0]:2.2f}, y: {jig_position[1]:2.2f}, z: {jig_position[2]:.2f}")
 
