@@ -36,11 +36,17 @@ CIRCLE_THICKNESS: int = -1
 
 # Initialize GUI
 cv2.namedWindow("Red")
-cv2.createTrackbar("min hue", "Red", 0, 179, utilities.nothing)
-cv2.createTrackbar("max hue", "Red", 179, 179, utilities.nothing)
-cv2.createTrackbar("min saturation", "Red", 0, 255, utilities.nothing)
-cv2.createTrackbar("max saturation", "Red", 255, 255, utilities.nothing)
-cv2.createTrackbar("min value", "Red", 0, 255, utilities.nothing)
+# cv2.createTrackbar("min hue", "Red", 0, 179, utilities.nothing)
+# cv2.createTrackbar("max hue", "Red", 179, 179, utilities.nothing)
+# cv2.createTrackbar("min saturation", "Red", 0, 255, utilities.nothing)
+# cv2.createTrackbar("max saturation", "Red", 255, 255, utilities.nothing)
+# cv2.createTrackbar("min value", "Red", 0, 255, utilities.nothing)
+# cv2.createTrackbar("max value", "Red", 255, 255, utilities.nothing)
+cv2.createTrackbar("min hue", "Red", 125, 179, utilities.nothing)
+cv2.createTrackbar("max hue", "Red", 138, 179, utilities.nothing)
+cv2.createTrackbar("min saturation", "Red", 155, 255, utilities.nothing)
+cv2.createTrackbar("max saturation", "Red", 229, 255, utilities.nothing)
+cv2.createTrackbar("min value", "Red", 140, 255, utilities.nothing)
 cv2.createTrackbar("max value", "Red", 255, 255, utilities.nothing)
 
 
