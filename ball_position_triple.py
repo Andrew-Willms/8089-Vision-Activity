@@ -252,7 +252,7 @@ def main():
             cv2.putText(red_mask_colorized, "No ball found", BOTTOM_TEXT_START_COORDINATES, FONT, FONT_SCALE, RED_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
             cv2.putText(frame_copy, "No ball found", RED_TEXT_START_COORDINATES, FONT, FONT_SCALE, RED_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
 
-        cv2.imshow("Red", numpy.hstack((frame_resized, red_mask_colorized)))
+        #cv2.imshow("Red", numpy.hstack((frame_resized, red_mask_colorized)))
 
         #####################
         ####    Green    ####
@@ -313,6 +313,8 @@ def main():
         cv2.imshow("Blue", numpy.hstack((frame_resized, blue_mask_colorized)))
 
         ########################
+
+        cv2.imshow("Red", numpy.vstack(numpy.hstack((frame_resized, red_mask_colorized))), numpy.hstack((green_mask_colorized, blue_mask_colorized)))
 
         cv2.imshow("Main", frame_copy)
 
