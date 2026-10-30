@@ -125,9 +125,9 @@ def get_ball_camera_coords(mask: numpy.ndarray) -> tuple[float, float] | None:
 
 def get_ball_angle(center: tuple[float, float]) -> tuple[float, float] | None:
 
-    x: float = float(numpy.arctan((center[0] - C_X) / F_X)) * 180 / math.pi
+    x: float = float(numpy.arctan((center[0] - C_X) / F_X))
 
-    y: float = -float(numpy.arctan((center[1] - C_Y) / F_Y)) * 180 / math.pi
+    y: float = -float(numpy.arctan((center[1] - C_Y) / F_Y))
 
     return (x, y)
 
@@ -157,13 +157,13 @@ def main():
         mask = create_mask(frame)
         colorized_mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
 
-        center: tuple[int, int] | None = get_ball_camera_coords(mask)
+        center: tuple[float, float] | None = get_ball_camera_coords(mask)
 
         if (center != None):
 
-            cv2.circle(colorized_mask, center, CIRCLE_RADIUS, CIRCLE_COLOR, CIRCLE_THICKNESS)
+            cv2.circle(colorized_mask, (int(center[0]), int(center[1])), CIRCLE_RADIUS, CIRCLE_COLOR, CIRCLE_THICKNESS)
 
-            camera_angle: tuple[int, int] = get_ball_angle(center)
+            camera_angle: tuple[float, float] = get_ball_angle(center)
 
             horizontal_angle_degrees: float = (camera_angle[0] / math.pi * 180)
             vertical_angle_degrees: float = (camera_angle[1] / math.pi * 180)
