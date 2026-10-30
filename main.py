@@ -12,12 +12,13 @@ import utilities
 # 45 vertical, 60 horizontal
 
 
-
+# Resolution
 HORIZONTAL_RESOLUTION: int = 640
 VERTICAL_RESOLUTION: int = 480
 HALF_HORIZONTAL_RESOLUTION: int = HORIZONTAL_RESOLUTION / 2
 HALF_VERTICAL_RESOLUTION: int = VERTICAL_RESOLUTION / 2
 
+# FOV
 HORIZONTAL_FOV_DEGREES: float = 45
 VERTICAL_FOV_DEGREES: float = 30
 HORIZONTAL_FOV: float = HORIZONTAL_FOV_DEGREES / 180 * math.pi
@@ -25,6 +26,12 @@ VERTICAL_FOV: float = VERTICAL_FOV_DEGREES / 180 * math.pi
 HALF_HORIZONTAL_FOV: float = HORIZONTAL_FOV / 2.0
 HALF_VERTICAL_FOV: float = VERTICAL_FOV / 2.0
 
+# Indicator Parameters
+RED_COLOR: tuple[int, int, int] = (0, 0, 255)
+GREEN_COLOR: tuple[int, int, int] = (0, 255, 0)
+BLUE_COLOR: tuple[int, int, int] = (255, 0, 0)
+CIRCLE_RADIUS: int = 3
+CIRCLE_THICKNESS: int = -1
 
 
 # Initialize GUI
@@ -54,9 +61,6 @@ def get_red_ball_camera_coords(frame: numpy.ndarray) -> tuple[float, float] | No
     frame_resized = cv2.resize(cv2.flip(frame, 1), (HORIZONTAL_RESOLUTION, VERTICAL_RESOLUTION))
     frame_hsv = cv2.cvtColor(frame_resized, cv2.COLOR_RGB2HSV)
     mask = cv2.inRange(frame_hsv, lower_bound, upper_bound)
-    colorized_mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
-
-    cv2.imshow("Red", numpy.hstack((frame_resized, colorized_mask)))
 
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -67,7 +71,12 @@ def get_red_ball_camera_coords(frame: numpy.ndarray) -> tuple[float, float] | No
     largest_contour = max(contours, key = cv2.contourArea)
     center = utilities.contour_center(largest_contour)
 
-    return (center[0], center[1])
+    # Draw indicator to mask
+    colorized_mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+    cv2.circle(colorized_mask, center, CIRCLE_RADIUS, RED_COLOR, CIRCLE_THICKNESS)
+    cv2.imshow("Red", numpy.hstack((frame_resized, colorized_mask)))
+
+    return center
 
 
 
