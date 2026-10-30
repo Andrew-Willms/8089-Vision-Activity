@@ -143,7 +143,7 @@ def main():
             horizontal_angle_degrees: float = (camera_angle[0] / math.pi * 180)
             vertical_angle_degrees: float = (camera_angle[1] / math.pi * 180)
             angle_text: str = f"horizontal angle: {horizontal_angle_degrees:4.0f}, vertical angle {vertical_angle_degrees:4.0f}"
-            cv2.putText(colorized_mask, TEXT_START_COORDINATES, FONT, FONT_SCALE, TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE)
+            cv2.putText(colorized_mask, TEXT_START_COORDINATES, FONT, FONT_SCALE, TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, True)
 
         cv2.imshow("Red", numpy.hstack((frame_resized, colorized_mask)))
 
