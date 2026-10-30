@@ -107,6 +107,9 @@ def get_ball_camera_coords_and_area(mask: numpy.ndarray) -> tuple[float, float, 
     center = utilities.contour_center(largest_contour)
     area: float = cv2.contourArea(largest_contour)
 
+    if area == 0:
+        return None
+
     points = numpy.array([[[center[0], center[1]]]], dtype=numpy.float64)
     undistorted_points = cv2.undistortPoints(
         points,
