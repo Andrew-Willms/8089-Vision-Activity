@@ -179,7 +179,7 @@ def main():
             angle_text: str = f"horizontal angle: {horizontal_angle_degrees:.0f}, vertical angle: {vertical_angle_degrees:.0f}"
             cv2.putText(colorized_mask, angle_text, TEXT_START_COORDINATES, FONT, FONT_SCALE, TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
 
-            print(f"horizontal angle: {horizontal_angle_degrees:4.0f}, vertical angle {vertical_angle_degrees:4.0f}")
+            #print(f"horizontal angle: {horizontal_angle_degrees:4.0f}, vertical angle {vertical_angle_degrees:4.0f}")
 
         else:
             print("Ball not found.")
