@@ -12,12 +12,13 @@ import utilities
 # 45 vertical, 60 horizontal
 
 
-# Resolution
+# Camera Resolution
 HORIZONTAL_RESOLUTION: int = 640
 VERTICAL_RESOLUTION: int = 480
 HALF_HORIZONTAL_RESOLUTION: int = HORIZONTAL_RESOLUTION / 2
 HALF_VERTICAL_RESOLUTION: int = VERTICAL_RESOLUTION / 2
 
+# Camera Specs
 F_X: float = 594.777
 F_Y: float = 594.449
 C_X: float = 323.116
@@ -29,7 +30,6 @@ P1: float = -0.0051909
 P2: float = -0.00071865
 K3: float = -1.0536
 
-# Camera Specs
 CAMERA_MATRIX = numpy.array([
     [ F_X,  0,   C_X ],
     [ 0,    F_Y, C_Y ],
@@ -39,14 +39,6 @@ CAMERA_MATRIX = numpy.array([
 DISTORTION_COEFFICIENTS = numpy.array([
     K1, K2, P1, P2, K3
 ], dtype=numpy.float64)
-
-# FOV
-HORIZONTAL_FOV_DEGREES: float = 45
-VERTICAL_FOV_DEGREES: float = 30
-HORIZONTAL_FOV: float = HORIZONTAL_FOV_DEGREES / 180 * math.pi
-VERTICAL_FOV: float = VERTICAL_FOV_DEGREES / 180 * math.pi
-HALF_HORIZONTAL_FOV: float = HORIZONTAL_FOV / 2.0
-HALF_VERTICAL_FOV: float = VERTICAL_FOV / 2.0
 
 # Center Indicator Parameters
 CIRCLE_COLOR: tuple[int, int, int] = (0, 0, 255)
@@ -111,7 +103,6 @@ def get_ball_camera_coords(mask: numpy.ndarray) -> tuple[float, float] | None:
     center = utilities.contour_center(largest_contour)
 
     points = numpy.array([[[center[0], center[1]]]], dtype=numpy.float64)
-
     undistorted_points = cv2.undistortPoints(
         points,
         CAMERA_MATRIX,
