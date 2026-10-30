@@ -72,6 +72,8 @@ def get_red_ball_camera_coords(frame: numpy.ndarray) -> tuple[float, float] | No
 
     if len(contours) == 0:
         print("Red ball not found.")
+        colorized_mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+        cv2.imshow("Red", numpy.hstack((frame_resized, colorized_mask)))
         return None
 
     largest_contour = max(contours, key = cv2.contourArea)
