@@ -167,7 +167,7 @@ def create_masks(frame: numpy.ndarray) -> tuple[numpy.ndarray, numpy.ndarray, nu
 
 
 
-def get_ball_camera_coords_and_area(mask: numpy.ndarray) -> tuple[float, float, float] | None:
+def get_ball_camera_coords(mask: numpy.ndarray) -> tuple[float, float] | None:
 
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -176,10 +176,6 @@ def get_ball_camera_coords_and_area(mask: numpy.ndarray) -> tuple[float, float, 
 
     largest_contour = max(contours, key = cv2.contourArea)
     center = utilities.contour_center(largest_contour)
-    area: float = cv2.contourArea(largest_contour)
-
-    if area == 0:
-        return None
 
     points = numpy.array([[[center[0], center[1]]]], dtype=numpy.float64)
     undistorted_points = cv2.undistortPoints(
@@ -189,13 +185,7 @@ def get_ball_camera_coords_and_area(mask: numpy.ndarray) -> tuple[float, float, 
         P=CAMERA_MATRIX
     )
 
-    return (float(undistorted_points[0, 0, 0]), float(undistorted_points[0, 0, 1]), area)
-
-    x: float = float(numpy.arctan((center[0] - C_X) / F_X))
-
-    y: float = -float(numpy.arctan((center[1] - C_Y) / F_Y))
-
-    return (x, y)
+    return (float(undistorted_points[0, 0, 0]), float(undistorted_points[0, 0, 1]))
 
 
 
@@ -249,21 +239,15 @@ def main():
         green_mask_colorized: numpy.ndarray = cv2.cvtColor(masks[1], cv2.COLOR_GRAY2BGR)
         blue_mask_colorized: numpy.ndarray = cv2.cvtColor(masks[2], cv2.COLOR_GRAY2BGR)
 
-        red_result: tuple[float, float, float] | None = get_ball_camera_coords_and_area(masks[0])
-        green_result: tuple[float, float, float] | None = get_ball_camera_coords_and_area(masks[1])
-        blue_result: tuple[float, float, float] | None = get_ball_camera_coords_and_area(masks[2])
+        red_center: tuple[float, float] | None = get_ball_camera_coords(masks[0])
+        green_center: tuple[float, float] | None = get_ball_camera_coords(masks[1])
+        blue_center: tuple[float, float] | None = get_ball_camera_coords(masks[2])
 
         ###################
         ####    Red    ####
         ###################
 
-        red_center: tuple[float, float]
-        green_center: tuple[float, float]
-        blue_center: tuple[float, float]
-
-        if red_result != None:
-
-            red_center = (red_result[0], red_result[1])
+        if red_center != None:
 
             cv2.circle(red_mask_colorized, (int(red_center[0]), int(red_center[1])), CIRCLE_RADIUS, RED_CIRCLE_COLOR, CIRCLE_THICKNESS)
             cv2.circle(frame_copy, (int(red_center[0]), int(red_center[1])), CIRCLE_RADIUS, RED_CIRCLE_COLOR, CIRCLE_THICKNESS)
@@ -279,9 +263,7 @@ def main():
         ####    Green    ####
         #####################
 
-        if green_result != None:
-
-            green_center = (green_result[0], green_result[1])
+        if green_center != None:
 
             cv2.circle(green_mask_colorized, (int(green_center[0]), int(green_center[1])), CIRCLE_RADIUS, GREEN_CIRCLE_COLOR, CIRCLE_THICKNESS)
             cv2.circle(frame_copy, (int(green_center[0]), int(green_center[1])), CIRCLE_RADIUS, GREEN_CIRCLE_COLOR, CIRCLE_THICKNESS)
@@ -297,9 +279,7 @@ def main():
         ####    Blue    ####
         ####################
 
-        if blue_result != None:
-
-            blue_center = (blue_result[0], blue_result[1])
+        if blue_center != None:
 
             cv2.circle(blue_mask_colorized, (int(blue_center[0]), int(blue_center[1])), CIRCLE_RADIUS, BLUE_CIRCLE_COLOR, CIRCLE_THICKNESS)
             cv2.circle(frame_copy, (int(blue_center[0]), int(blue_center[1])), CIRCLE_RADIUS, BLUE_CIRCLE_COLOR, CIRCLE_THICKNESS)
@@ -313,7 +293,7 @@ def main():
 
         ########################
 
-        if red_result != None and green_result != None and blue_result != None:
+        if red_center != None and green_center != None and blue_center != None and not (red_center == green_center and green_center == blue_center):
 
             ball_position: tuple[float, float, float] = get_ball_position(red_center, green_center, blue_center)
 
