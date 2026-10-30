@@ -218,7 +218,7 @@ def get_ball_position(red_image_coords: tuple[float, float], green_image_coords:
     if not success:
         return None
 
-    return tuple(translation_vector.flatten())
+    return (translation_vector[0], -translation_vector[1], translation_vector[2])
 
 
 
