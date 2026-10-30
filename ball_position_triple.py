@@ -68,7 +68,10 @@ TEXT_IS_BOTTOM_LEFT_ORIGIN: bool = False
 
 
 # Initialize GUI
-cv2.namedWindow("Window")
+#cv2.namedWindow("Window")
+cv2.namedWindow("Red")
+cv2.namedWindow("Green")
+cv2.namedWindow("Blue")
 # cv2.createTrackbar("min hue", "Red", 0, 179, utilities.nothing)
 # cv2.createTrackbar("max hue", "Red", 179, 179, utilities.nothing)
 # cv2.createTrackbar("min saturation", "Red", 0, 255, utilities.nothing)
@@ -242,7 +245,7 @@ def main():
             print(f"x: {ball_position[0]:2.2f}, y: {ball_position[1]:2.2f}, z: {ball_position[2]:.2f}")
 
         else:
-            print("Ball not found.")
+            print("Red ball not found.")
             cv2.putText(masks[0], "No ball found", BOTTOM_TEXT_START_COORDINATES, FONT, FONT_SCALE, RED_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
             cv2.putText(frame_copy, "No ball found", RED_TEXT_START_COORDINATES, FONT, FONT_SCALE, RED_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
 
@@ -271,7 +274,7 @@ def main():
             print(f"x: {ball_position[0]:2.2f}, y: {ball_position[1]:2.2f}, z: {ball_position[2]:.2f}")
 
         else:
-            print("Ball not found.")
+            print("Green ball not found.")
             cv2.putText(masks[1], "No ball found", BOTTOM_TEXT_START_COORDINATES, FONT, FONT_SCALE, GREEN_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
             cv2.putText(frame_copy, "No ball found", GREEN_TEXT_START_COORDINATES, FONT, FONT_SCALE, GREEN_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
 
@@ -300,7 +303,7 @@ def main():
             print(f"x: {ball_position[0]:2.2f}, y: {ball_position[1]:2.2f}, z: {ball_position[2]:.2f}")
 
         else:
-            print("Ball not found.")
+            print("Blue ball not found.")
             cv2.putText(masks[2], "No ball found", BOTTOM_TEXT_START_COORDINATES, FONT, FONT_SCALE, BLUE_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
             cv2.putText(frame_copy, "No ball found", BOTTOM_TEXT_START_COORDINATES, FONT, FONT_SCALE, BLUE_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
 
