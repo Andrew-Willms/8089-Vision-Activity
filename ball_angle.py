@@ -18,6 +18,17 @@ VERTICAL_RESOLUTION: int = 480
 HALF_HORIZONTAL_RESOLUTION: int = HORIZONTAL_RESOLUTION / 2
 HALF_VERTICAL_RESOLUTION: int = VERTICAL_RESOLUTION / 2
 
+# Camera Specs
+CAMERA_MATRIX = numpy.array([
+    [ 594.777,  0,       323.116 ],
+    [ 0,        594.449, 237.647 ],
+    [ 0,        0,       1       ]
+], dtype=numpy.float64)
+
+DISTORTION_COEFFICIENTS = numpy.array([
+    0.026486, 0.11972, -0.0051909, -0.00071865, -1.0536
+], dtype=numpy.float64)
+
 # FOV
 HORIZONTAL_FOV_DEGREES: float = 45
 VERTICAL_FOV_DEGREES: float = 30
@@ -88,7 +99,16 @@ def get_ball_camera_coords(mask: numpy.ndarray) -> tuple[float, float] | None:
     largest_contour = max(contours, key = cv2.contourArea)
     center = utilities.contour_center(largest_contour)
 
-    return center
+    points = numpy.array([[[center[0], center[1]]]], dtype=numpy.float64)
+
+    undistorted_points = cv2.undistortPoints(
+        points,
+        CAMERA_MATRIX,
+        DISTORTION_COEFFICIENTS,
+        P=CAMERA_MATRIX
+    )
+
+    return (float(undistorted_points[0, 0, 0]), float(undistorted_points[0, 0, 1]))
 
 
 
