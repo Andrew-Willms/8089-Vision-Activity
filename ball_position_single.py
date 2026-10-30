@@ -132,15 +132,15 @@ def get_ball_angle(center: tuple[float, float]) -> tuple[float, float] | None:
 
 
 
-def get_ball_position(ball_pixel_area: float, ball_angle: tuple[float, float]) -> float:
+def get_ball_position(ball_pixel_area: float, ball_angle: tuple[float, float]) -> tuple[float, float, float]:
 
     # Distance to the ball based on the pixel area of the ball at 1.0m and the inverse square law.
-    distance: float = 1.0 * math.sqrt(PIXEL_AREA_AT_1M / ball_pixel_area)
+    z_distance: float = 1.0 * math.sqrt(PIXEL_AREA_AT_1M / ball_pixel_area)
 
-    x_distance: float = distance * math.tan(ball_angle[0])
-    y_distance: float = distance * math.tan(ball_angle[1])
+    x_distance: float = z_distance * math.tan(ball_angle[0])
+    y_distance: float = z_distance * math.tan(ball_angle[1])
 
-    return (x_distance, y_distance)
+    return (x_distance, y_distance, z_distance)
 
 
 
@@ -182,10 +182,10 @@ def main():
 
             ball_position: tuple[float, float] = get_ball_position(area, ball_angle)
 
-            position_text: str = f"x distance: {ball_position[0]:.2f}, y distance: {ball_position[1]:.2f}"
+            position_text: str = f"x: {ball_position[0]:.2f}, y: {ball_position[1]:.2f}, z: {ball_position[2]:.2f}"
             cv2.putText(colorized_mask, position_text, TEXT_START_COORDINATES, FONT, FONT_SCALE, TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
 
-            print(f"x distance: {ball_position[0]:2.2f}, y distance: {ball_position[1]:2.2f}")
+            print(f"x: {ball_position[0]:2.2f}, y: {ball_position[1]:2.2f}, z: {ball_position[2]:.2f}")
 
         else:
             print("Ball not found.")
