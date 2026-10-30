@@ -314,7 +314,7 @@ def main():
 
         ########################
 
-        cv2.imshow("Red", numpy.vstack(numpy.hstack(frame_resized, red_mask_colorized), numpy.hstack(green_mask_colorized, blue_mask_colorized)))
+        cv2.imshow("Red", numpy.vstack((numpy.hstack((frame_resized, red_mask_colorized)), numpy.hstack((green_mask_colorized, blue_mask_colorized)))))
 
         cv2.imshow("Main", frame_copy)
 
