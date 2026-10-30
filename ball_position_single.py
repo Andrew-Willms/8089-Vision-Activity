@@ -132,7 +132,7 @@ def get_ball_angle(center: tuple[float, float]) -> tuple[float, float] | None:
 def get_ball_position(ball_pixel_area: float, ball_angle: tuple[float, float]) -> float:
 
     # Distance to the ball based on the pixel area of the ball at 1.0m and the inverse square law.
-    distance: float = 1.0 * math.sqrt(PIXEL_AREA_AT_1M / float)
+    distance: float = 1.0 * math.sqrt(PIXEL_AREA_AT_1M / ball_pixel_area)
 
     x_distance: float = distance * math.tan(ball_angle[0])
     y_distance: float = distance * math.tan(ball_angle[1])
