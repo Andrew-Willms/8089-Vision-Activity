@@ -162,15 +162,13 @@ def main():
         mask = create_mask(frame)
         colorized_mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
 
-        center_x: float
-        center_y: float
-        area: float
-        (center_x, center_y, area) | None = get_ball_camera_coords_and_area(mask)
-        center: tuple[float, float] = (center_x, center_y)
+        result: tuple[float, float, float] | None = get_ball_camera_coords_and_area(mask)
 
-        print(area)
+        if (result != None):
 
-        if (center != None):
+            center: tuple[float, float] = (result[0], result[1])
+            area: float = result[3]
+            print(area)
 
             cv2.circle(colorized_mask, (int(center[0]), int(center[1])), CIRCLE_RADIUS, CIRCLE_COLOR, CIRCLE_THICKNESS)
 
