@@ -214,7 +214,7 @@ def main():
             break
 
         frame_resized = cv2.resize(cv2.flip(frame, 1), (HORIZONTAL_RESOLUTION, VERTICAL_RESOLUTION))
-        frame_copy = frame_resized.copy
+        frame_copy = frame_resized.copy()
 
         masks: tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray] = create_masks(frame)
         red_mask_colorized: numpy.ndarray = cv2.cvtColor(masks[0], cv2.COLOR_GRAY2BGR)
