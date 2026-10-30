@@ -167,7 +167,7 @@ def main():
         if (result != None):
 
             center: tuple[float, float] = (result[0], result[1])
-            area: float = result[3]
+            area: float = result[2]
             print(area)
 
             cv2.circle(colorized_mask, (int(center[0]), int(center[1])), CIRCLE_RADIUS, CIRCLE_COLOR, CIRCLE_THICKNESS)
