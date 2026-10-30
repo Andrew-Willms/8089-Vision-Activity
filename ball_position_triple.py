@@ -319,7 +319,7 @@ def main():
 
         ########################
 
-        cv2.imshow("Main", frame_copy)
+        cv2.imshow("Main", cv2.resize(frame_copy, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC))
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
