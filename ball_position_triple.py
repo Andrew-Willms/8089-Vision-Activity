@@ -85,19 +85,19 @@ cv2.createTrackbar("R max saturation", "Red", 229, 255, utilities.nothing)
 cv2.createTrackbar("R min value", "Red", 140, 255, utilities.nothing)
 cv2.createTrackbar("R max value", "Red", 255, 255, utilities.nothing)
 
-cv2.createTrackbar("G min hue", "Red", 0, 179, utilities.nothing)
-cv2.createTrackbar("G max hue", "Red", 179, 179, utilities.nothing)
-cv2.createTrackbar("G min saturation", "Red", 0, 255, utilities.nothing)
-cv2.createTrackbar("G max saturation", "Red", 255, 255, utilities.nothing)
-cv2.createTrackbar("G min value", "Red", 0, 255, utilities.nothing)
-cv2.createTrackbar("G max value", "Red", 255, 255, utilities.nothing)
+cv2.createTrackbar("G min hue", "Green", 0, 179, utilities.nothing)
+cv2.createTrackbar("G max hue", "Green", 179, 179, utilities.nothing)
+cv2.createTrackbar("G min saturation", "Green", 0, 255, utilities.nothing)
+cv2.createTrackbar("G max saturation", "Green", 255, 255, utilities.nothing)
+cv2.createTrackbar("G min value", "Green", 0, 255, utilities.nothing)
+cv2.createTrackbar("G max value", "Green", 255, 255, utilities.nothing)
 
-cv2.createTrackbar("B min hue", "Red", 0, 179, utilities.nothing)
-cv2.createTrackbar("B max hue", "Red", 179, 179, utilities.nothing)
-cv2.createTrackbar("B min saturation", "Red", 0, 255, utilities.nothing)
-cv2.createTrackbar("B max saturation", "Red", 255, 255, utilities.nothing)
-cv2.createTrackbar("B min value", "Red", 0, 255, utilities.nothing)
-cv2.createTrackbar("B max value", "Red", 255, 255, utilities.nothing)
+cv2.createTrackbar("B min hue", "Blue", 0, 179, utilities.nothing)
+cv2.createTrackbar("B max hue", "Blue", 179, 179, utilities.nothing)
+cv2.createTrackbar("B min saturation", "Blue", 0, 255, utilities.nothing)
+cv2.createTrackbar("B max saturation", "Blue", 255, 255, utilities.nothing)
+cv2.createTrackbar("B min value", "Blue", 0, 255, utilities.nothing)
+cv2.createTrackbar("B max value", "Blue", 255, 255, utilities.nothing)
 
 
 
@@ -114,21 +114,21 @@ def create_masks(frame: numpy.ndarray) -> tuple[numpy.ndarray, numpy.ndarray, nu
 
     g_lower_bound = numpy.array([0, 0, 0])
     g_upper_bound = numpy.array([179, 255, 255])
-    g_lower_bound[0] = cv2.getTrackbarPos("G min hue", "Red")
-    g_upper_bound[0] = cv2.getTrackbarPos("G max hue", "Red")
-    g_lower_bound[1] = cv2.getTrackbarPos("G min saturation", "Red")
-    g_upper_bound[1] = cv2.getTrackbarPos("G max saturation", "Red")
-    g_lower_bound[2] = cv2.getTrackbarPos("G min value", "Red")
-    g_upper_bound[2] = cv2.getTrackbarPos("G max value", "Red")
+    g_lower_bound[0] = cv2.getTrackbarPos("G min hue", "Green")
+    g_upper_bound[0] = cv2.getTrackbarPos("G max hue", "Green")
+    g_lower_bound[1] = cv2.getTrackbarPos("G min saturation", "Green")
+    g_upper_bound[1] = cv2.getTrackbarPos("G max saturation", "Green")
+    g_lower_bound[2] = cv2.getTrackbarPos("G min value", "Green")
+    g_upper_bound[2] = cv2.getTrackbarPos("G max value", "Green")
 
     b_lower_bound = numpy.array([0, 0, 0])
     b_upper_bound = numpy.array([179, 255, 255])
-    b_lower_bound[0] = cv2.getTrackbarPos("B min hue", "Red")
-    b_upper_bound[0] = cv2.getTrackbarPos("B max hue", "Red")
-    b_lower_bound[1] = cv2.getTrackbarPos("B min saturation", "Red")
-    b_upper_bound[1] = cv2.getTrackbarPos("B max saturation", "Red")
-    b_lower_bound[2] = cv2.getTrackbarPos("B min value", "Red")
-    b_upper_bound[2] = cv2.getTrackbarPos("B max value", "Red")
+    b_lower_bound[0] = cv2.getTrackbarPos("B min hue", "Blue")
+    b_upper_bound[0] = cv2.getTrackbarPos("B max hue", "Blue")
+    b_lower_bound[1] = cv2.getTrackbarPos("B min saturation", "Blue")
+    b_upper_bound[1] = cv2.getTrackbarPos("B max saturation", "Blue")
+    b_lower_bound[2] = cv2.getTrackbarPos("B min value", "Blue")
+    b_upper_bound[2] = cv2.getTrackbarPos("B max value", "Blue")
 
     # The actual resolution also happens to be 640x480 on the Acer Spin 713...
     # So I don't need to resize the image, but this makes the program more portable.
@@ -193,7 +193,6 @@ def get_ball_position(ball_pixel_area: float, ball_angle: tuple[float, float]) -
 
 
 
-
 def main():
 
     webcam = cv2.VideoCapture(0)
@@ -252,7 +251,7 @@ def main():
             cv2.putText(red_mask_colorized, "No ball found", BOTTOM_TEXT_START_COORDINATES, FONT, FONT_SCALE, RED_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
             cv2.putText(frame_copy, "No ball found", RED_TEXT_START_COORDINATES, FONT, FONT_SCALE, RED_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
 
-        #cv2.imshow("Red", numpy.hstack((frame_resized, red_mask_colorized)))
+        cv2.imshow("Red", numpy.hstack((frame_resized, red_mask_colorized)))
 
         #####################
         ####    Green    ####
@@ -313,8 +312,6 @@ def main():
         cv2.imshow("Blue", numpy.hstack((frame_resized, blue_mask_colorized)))
 
         ########################
-
-        cv2.imshow("Red", numpy.vstack((numpy.hstack((frame_resized, red_mask_colorized)), numpy.hstack((green_mask_colorized, blue_mask_colorized)))))
 
         cv2.imshow("Main", frame_copy)
 
