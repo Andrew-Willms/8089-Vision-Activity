@@ -72,6 +72,12 @@ TEXT_IS_BOTTOM_LEFT_ORIGIN: bool = False
 cv2.namedWindow("Red")
 cv2.namedWindow("Green")
 cv2.namedWindow("Blue")
+cv2.setWindowProperty("Red", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_MAXIMIZED)
+cv2.setWindowProperty("Green", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_MAXIMIZED)
+cv2.setWindowProperty("Blue", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_MAXIMIZED)
+
+
+
 # cv2.createTrackbar("min hue", "Red", 0, 179, utilities.nothing)
 # cv2.createTrackbar("max hue", "Red", 179, 179, utilities.nothing)
 # cv2.createTrackbar("min saturation", "Red", 0, 255, utilities.nothing)
