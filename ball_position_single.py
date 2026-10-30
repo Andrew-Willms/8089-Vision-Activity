@@ -61,19 +61,19 @@ TEXT_IS_BOTTOM_LEFT_ORIGIN: bool = False
 
 
 # Initialize GUI
-cv2.namedWindow("Red")
-# cv2.createTrackbar("min hue", "Red", 0, 179, utilities.nothing)
-# cv2.createTrackbar("max hue", "Red", 179, 179, utilities.nothing)
-# cv2.createTrackbar("min saturation", "Red", 0, 255, utilities.nothing)
-# cv2.createTrackbar("max saturation", "Red", 255, 255, utilities.nothing)
-# cv2.createTrackbar("min value", "Red", 0, 255, utilities.nothing)
-# cv2.createTrackbar("max value", "Red", 255, 255, utilities.nothing)
-cv2.createTrackbar("min hue", "Red", 125, 179, utilities.nothing)
-cv2.createTrackbar("max hue", "Red", 138, 179, utilities.nothing)
-cv2.createTrackbar("min saturation", "Red", 155, 255, utilities.nothing)
-cv2.createTrackbar("max saturation", "Red", 229, 255, utilities.nothing)
-cv2.createTrackbar("min value", "Red", 140, 255, utilities.nothing)
-cv2.createTrackbar("max value", "Red", 255, 255, utilities.nothing)
+cv2.namedWindow("Window")
+# cv2.createTrackbar("min hue", "Window", 0, 179, utilities.nothing)
+# cv2.createTrackbar("max hue", "Window", 179, 179, utilities.nothing)
+# cv2.createTrackbar("min saturation", "Window", 0, 255, utilities.nothing)
+# cv2.createTrackbar("max saturation", "Window", 255, 255, utilities.nothing)
+# cv2.createTrackbar("min value", "Window", 0, 255, utilities.nothing)
+# cv2.createTrackbar("max value", "Window", 255, 255, utilities.nothing)
+cv2.createTrackbar("min hue", "Window", 125, 179, utilities.nothing)
+cv2.createTrackbar("max hue", "Window", 138, 179, utilities.nothing)
+cv2.createTrackbar("min saturation", "Window", 155, 255, utilities.nothing)
+cv2.createTrackbar("max saturation", "Window", 229, 255, utilities.nothing)
+cv2.createTrackbar("min value", "Window", 140, 255, utilities.nothing)
+cv2.createTrackbar("max value", "Window", 255, 255, utilities.nothing)
 
 
 
@@ -81,12 +81,12 @@ def create_mask(frame: numpy.ndarray) -> numpy.ndarray:
 
     lower_bound = numpy.array([0, 0, 0])
     upper_bound = numpy.array([179, 255, 255])
-    lower_bound[0] = cv2.getTrackbarPos("min hue", "Red")
-    upper_bound[0] = cv2.getTrackbarPos("max hue", "Red")
-    lower_bound[1] = cv2.getTrackbarPos("min saturation", "Red")
-    upper_bound[1] = cv2.getTrackbarPos("max saturation", "Red")
-    lower_bound[2] = cv2.getTrackbarPos("min value", "Red")
-    upper_bound[2] = cv2.getTrackbarPos("max value", "Red")
+    lower_bound[0] = cv2.getTrackbarPos("min hue", "Window")
+    upper_bound[0] = cv2.getTrackbarPos("max hue", "Window")
+    lower_bound[1] = cv2.getTrackbarPos("min saturation", "Window")
+    upper_bound[1] = cv2.getTrackbarPos("max saturation", "Window")
+    lower_bound[2] = cv2.getTrackbarPos("min value", "Window")
+    upper_bound[2] = cv2.getTrackbarPos("max value", "Window")
 
     # The actual resolution also happens to be 640x480 on the Acer Spin 713...
     # So I don't need to resize the image, but this makes the program more portable.
@@ -168,7 +168,7 @@ def main():
 
         frame_resized = cv2.resize(cv2.flip(frame, 1), (HORIZONTAL_RESOLUTION, VERTICAL_RESOLUTION))
 
-        mask = create_mask(frame)
+        mask: numpy.ndarray = create_mask(frame)
         colorized_mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
 
         result: tuple[float, float, float] | None = get_ball_camera_coords_and_area(mask)
@@ -193,7 +193,7 @@ def main():
             print("Ball not found.")
             cv2.putText(colorized_mask, "No ball found", TEXT_START_COORDINATES, FONT, FONT_SCALE, TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
 
-        cv2.imshow("Red", numpy.hstack((frame_resized, colorized_mask)))
+        cv2.imshow("Window", numpy.hstack((frame_resized, colorized_mask)))
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
