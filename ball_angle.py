@@ -32,12 +32,13 @@ CIRCLE_RADIUS: int = 3
 CIRCLE_THICKNESS: int = -1
 
 # Text Parameters
-TEXT_START_COORDINATES: tuple[int, int] = (VERTICAL_RESOLUTION * 0.9, HORIZONTAL_RESOLUTION * 0.05)
+TEXT_START_COORDINATES: tuple[int, int] = (math.floor(HORIZONTAL_RESOLUTION * 0.05), math.floor(VERTICAL_RESOLUTION * 0.95))
 FONT = cv2.FONT_HERSHEY_SIMPLEX
-FONT_SCALE: float = 1.0
+FONT_SCALE: float = HORIZONTAL_RESOLUTION / 1280
 TEXT_COLOR: tuple[int, int, int] = (0, 0, 255)
-TEXT_THICKNESS: int = 2
+TEXT_THICKNESS: int = 1
 TEXT_LINE_TYPE = cv2.LINE_AA
+TEXT_IS_BOTTOM_LEFT_ORIGIN: bool = False
 
 
 
@@ -82,7 +83,6 @@ def get_ball_camera_coords(mask: numpy.ndarray) -> tuple[float, float] | None:
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     if len(contours) == 0:
-        print("Red ball not found.")
         return None
 
     largest_contour = max(contours, key = cv2.contourArea)
@@ -101,8 +101,6 @@ def get_ball_angle(center: tuple[float, float]) -> tuple[float, float] | None:
     vertical_pixels_from_center: float = -center[1] + HALF_VERTICAL_RESOLUTION # positive is towards the top
     distance_to_image_plane: float = HALF_VERTICAL_RESOLUTION / math.tan(HALF_VERTICAL_FOV) # tan=O/A -> A=O/tan
     theta_vertical: float = math.atan2(vertical_pixels_from_center, distance_to_image_plane)
-
-    print(f"horizontal angle: {(theta_horizontal / math.pi * 180):4.0f}, vertical angle {(theta_vertical / math.pi * 180):4.0f}")
 
     return (theta_horizontal, theta_vertical)
 
@@ -142,8 +140,14 @@ def main():
 
             horizontal_angle_degrees: float = (camera_angle[0] / math.pi * 180)
             vertical_angle_degrees: float = (camera_angle[1] / math.pi * 180)
-            angle_text: str = f"horizontal angle: {horizontal_angle_degrees:4.0f}, vertical angle {vertical_angle_degrees:4.0f}"
-            cv2.putText(colorized_mask, TEXT_START_COORDINATES, FONT, FONT_SCALE, TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, True)
+            angle_text: str = f"horizontal angle: {horizontal_angle_degrees:.0f}, vertical angle: {vertical_angle_degrees:.0f}"
+            cv2.putText(colorized_mask, angle_text, TEXT_START_COORDINATES, FONT, FONT_SCALE, TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
+
+            print(f"horizontal angle: {horizontal_angle_degrees:4.0f}, vertical angle {vertical_angle_degrees:4.0f}")
+
+        else:
+            print("Ball not found.")
+            cv2.putText(colorized_mask, "No ball found", TEXT_START_COORDINATES, FONT, FONT_SCALE, TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
 
         cv2.imshow("Red", numpy.hstack((frame_resized, colorized_mask)))
 
