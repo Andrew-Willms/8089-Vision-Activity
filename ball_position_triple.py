@@ -41,7 +41,7 @@ DISTORTION_COEFFICIENTS = numpy.array([
 ], dtype=numpy.float64)
 
 # Ball Specs
-BALL_DIAMETER: float = 0.066 # m
+BALL_DIAMETER: float = 0.066 # meters
 PIXEL_AREA_AT_1M: int = 1111
 
 # Center Indicator Parameters
@@ -65,6 +65,14 @@ TEXT_THICKNESS: int = 1
 TEXT_LINE_TYPE = cv2.LINE_AA
 TEXT_IS_BOTTOM_LEFT_ORIGIN: bool = False
 
+# Triangle
+SIDE_LENGTH: float = 0.20 # meters
+VERTICES = numpy.array([
+        [  0,                SIDE_LENGTH / numpy.sqrt(3),       0 ],
+        [ -SIDE_LENGTH / 2, -SIDE_LENGTH / (2 * numpy.sqrt(3)), 0 ],
+        [  SIDE_LENGTH / 2, -SIDE_LENGTH / (2 * numpy.sqrt(3)), 0 ]
+    ], dtype=numpy.float64)
+
 
 
 # Initialize GUI
@@ -75,8 +83,6 @@ cv2.namedWindow("Blue")
 cv2.setWindowProperty("Red", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 cv2.setWindowProperty("Green", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 cv2.setWindowProperty("Blue", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-
-
 
 # cv2.createTrackbar("min hue", "Red", 0, 179, utilities.nothing)
 # cv2.createTrackbar("max hue", "Red", 179, 179, utilities.nothing)
@@ -185,10 +191,6 @@ def get_ball_camera_coords_and_area(mask: numpy.ndarray) -> tuple[float, float, 
 
     return (float(undistorted_points[0, 0, 0]), float(undistorted_points[0, 0, 1]), area)
 
-
-
-def get_ball_angle(center: tuple[float, float]) -> tuple[float, float] | None:
-
     x: float = float(numpy.arctan((center[0] - C_X) / F_X))
 
     y: float = -float(numpy.arctan((center[1] - C_Y) / F_Y))
@@ -197,17 +199,25 @@ def get_ball_angle(center: tuple[float, float]) -> tuple[float, float] | None:
 
 
 
-def get_ball_position(ball_pixel_area: float, ball_angle: tuple[float, float]) -> tuple[float, float, float]:
+def get_ball_position(red_image_coords: tuple[float, float], green_image_coords: tuple[float, float], blue_image_coords: tuple[float, float]) -> tuple[float, float, float] | None:
 
-    # Distance to the ball based on the pixel area of the ball at 1.0m and the inverse square law.
-    # It seems like this would calculate the diagonal distance to the ball, but this is correct.
-    # Because as the ball moves towards the edge of the frame it shrinks this still holds... I think.
-    z_distance: float = 1.0 * math.sqrt(PIXEL_AREA_AT_1M / ball_pixel_area)
+    image_points = numpy.array([
+        red_image_coords,
+        green_image_coords,
+        blue_image_coords
+    ], dtype=numpy.float64)
 
-    x_distance: float = z_distance * math.tan(ball_angle[0])
-    y_distance: float = z_distance * math.tan(ball_angle[1])
+    success, rotation_vector, translation_vector = cv2.solvePnP(
+        VERTICES,
+        image_points,
+        CAMERA_MATRIX,
+        DISTORTION_COEFFICIENTS
+    )
 
-    return (x_distance, y_distance, z_distance)
+    if not success:
+        return None
+
+    return tuple(translation_vector.flatten())
 
 
 
@@ -246,23 +256,16 @@ def main():
         ####    Red    ####
         ###################
 
-        if (red_result != None):
+        red_center: tuple[float, float]
+        green_center: tuple[float, float]
+        blue_center: tuple[float, float]
 
-            center: tuple[float, float] = (red_result[0], red_result[1])
-            area: float = red_result[2]
+        if red_result != None:
 
-            cv2.circle(red_mask_colorized, (int(center[0]), int(center[1])), CIRCLE_RADIUS, RED_CIRCLE_COLOR, CIRCLE_THICKNESS)
-            cv2.circle(frame_copy, (int(center[0]), int(center[1])), CIRCLE_RADIUS, RED_CIRCLE_COLOR, CIRCLE_THICKNESS)
+            red_center = (red_result[0], red_result[1])
 
-            ball_angle: tuple[float, float] = get_ball_angle(center)
-
-            ball_position: tuple[float, float] = get_ball_position(area, ball_angle)
-
-            position_text: str = f"x: {ball_position[0]:.2f}, y: {ball_position[1]:.2f}, z: {ball_position[2]:.2f}"
-            cv2.putText(red_mask_colorized, position_text, BOTTOM_TEXT_START_COORDINATES, FONT, FONT_SCALE, RED_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
-            cv2.putText(frame_copy, position_text, RED_TEXT_START_COORDINATES, FONT, FONT_SCALE, RED_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
-
-            print(f"x: {ball_position[0]:2.2f}, y: {ball_position[1]:2.2f}, z: {ball_position[2]:.2f}")
+            cv2.circle(red_mask_colorized, (int(red_center[0]), int(red_center[1])), CIRCLE_RADIUS, RED_CIRCLE_COLOR, CIRCLE_THICKNESS)
+            cv2.circle(frame_copy, (int(red_center[0]), int(red_center[1])), CIRCLE_RADIUS, RED_CIRCLE_COLOR, CIRCLE_THICKNESS)
 
         else:
             print("Red ball not found.")
@@ -275,21 +278,12 @@ def main():
         ####    Green    ####
         #####################
 
-        if (green_result != None):
+        if green_result != None:
 
-            center: tuple[float, float] = (green_result[0], green_result[1])
-            area: float = green_result[2]
+            green_center = (green_result[0], green_result[1])
 
-            cv2.circle(green_mask_colorized, (int(center[0]), int(center[1])), CIRCLE_RADIUS, GREEN_CIRCLE_COLOR, CIRCLE_THICKNESS)
-            cv2.circle(frame_copy, (int(center[0]), int(center[1])), CIRCLE_RADIUS, GREEN_CIRCLE_COLOR, CIRCLE_THICKNESS)
-
-            ball_angle: tuple[float, float] = get_ball_angle(center)
-
-            ball_position: tuple[float, float] = get_ball_position(area, ball_angle)
-
-            position_text: str = f"x: {ball_position[0]:.2f}, y: {ball_position[1]:.2f}, z: {ball_position[2]:.2f}"
-            cv2.putText(green_mask_colorized, position_text, BOTTOM_TEXT_START_COORDINATES, FONT, FONT_SCALE, GREEN_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
-            cv2.putText(frame_copy, position_text, GREEN_TEXT_START_COORDINATES, FONT, FONT_SCALE, GREEN_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
+            cv2.circle(green_mask_colorized, (int(green_center[0]), int(green_center[1])), CIRCLE_RADIUS, GREEN_CIRCLE_COLOR, CIRCLE_THICKNESS)
+            cv2.circle(frame_copy, (int(green_center[0]), int(green_center[1])), CIRCLE_RADIUS, GREEN_CIRCLE_COLOR, CIRCLE_THICKNESS)
 
             print(f"x: {ball_position[0]:2.2f}, y: {ball_position[1]:2.2f}, z: {ball_position[2]:.2f}")
 
@@ -304,23 +298,12 @@ def main():
         ####    Blue    ####
         ####################
 
-        if (blue_result != None):
+        if blue_result != None:
 
-            center: tuple[float, float] = (blue_result[0], blue_result[1])
-            area: float = blue_result[2]
+            blue_center = (blue_result[0], blue_result[1])
 
-            cv2.circle(blue_mask_colorized, (int(center[0]), int(center[1])), CIRCLE_RADIUS, BLUE_CIRCLE_COLOR, CIRCLE_THICKNESS)
-            cv2.circle(frame_copy, (int(center[0]), int(center[1])), CIRCLE_RADIUS, BLUE_CIRCLE_COLOR, CIRCLE_THICKNESS)
-
-            ball_angle: tuple[float, float] = get_ball_angle(center)
-
-            ball_position: tuple[float, float] = get_ball_position(area, ball_angle)
-
-            position_text: str = f"x: {ball_position[0]:.2f}, y: {ball_position[1]:.2f}, z: {ball_position[2]:.2f}"
-            cv2.putText(blue_mask_colorized, position_text, BOTTOM_TEXT_START_COORDINATES, FONT, FONT_SCALE, BLUE_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
-            cv2.putText(frame_copy, position_text, BOTTOM_TEXT_START_COORDINATES, FONT, FONT_SCALE, BLUE_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
-
-            print(f"x: {ball_position[0]:2.2f}, y: {ball_position[1]:2.2f}, z: {ball_position[2]:.2f}")
+            cv2.circle(blue_mask_colorized, (int(blue_center[0]), int(blue_center[1])), CIRCLE_RADIUS, BLUE_CIRCLE_COLOR, CIRCLE_THICKNESS)
+            cv2.circle(frame_copy, (int(blue_center[0]), int(blue_center[1])), CIRCLE_RADIUS, BLUE_CIRCLE_COLOR, CIRCLE_THICKNESS)
 
         else:
             print("Blue ball not found.")
@@ -330,6 +313,19 @@ def main():
         cv2.imshow("Blue", numpy.hstack((frame_resized, blue_mask_colorized)))
 
         ########################
+
+        if red_result != None and green_result != None and blue_result != None:
+
+            ball_position: tuple[float, float, float] = get_ball_position(red_center, green_center, blue_center)
+
+            position_text: str = f"x: {ball_position[0]:.2f}, y: {ball_position[1]:.2f}, z: {ball_position[2]:.2f}"
+            cv2.putText(frame_copy, position_text, BOTTOM_TEXT_START_COORDINATES, FONT, FONT_SCALE, RED_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
+            print(f"x: {ball_position[0]:2.2f}, y: {ball_position[1]:2.2f}, z: {ball_position[2]:.2f}")
+
+        else:
+            cv2.putText(frame_copy, "Jig not found", BOTTOM_TEXT_START_COORDINATES, FONT, FONT_SCALE, RED_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
+            print("Jig not found")
+
 
         cv2.imshow("Main", cv2.resize(frame_copy, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC))
 
