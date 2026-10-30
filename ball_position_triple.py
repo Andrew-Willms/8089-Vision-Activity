@@ -48,6 +48,7 @@ PIXEL_AREA_AT_1M: int = 1111
 RED_CIRCLE_COLOR: tuple[int, int, int] = (0, 0, 255)
 GREEN_CIRCLE_COLOR: tuple[int, int, int] = (0, 255, 0)
 BLUE_CIRCLE_COLOR: tuple[int, int, int] = (255, 0, 0)
+WHITE_CIRCLE_COLOR: tuple[int, int, int] = (255, 255, 255)
 CIRCLE_RADIUS: int = 3
 CIRCLE_THICKNESS: int = -1
 
@@ -212,6 +213,28 @@ def get_ball_position(red_image_coords: tuple[float, float], green_image_coords:
 
 
 
+def world_position_to_camera_coord(position: tuple[float, float, float]) -> tuple[int, int]:
+
+    points = numpy.array([position], dtype=numpy.float64)
+
+    # The point is already in camera coordinates, so no additional rotation or translation is needed.
+    rvec = numpy.zeros((3, 1), dtype=numpy.float64)
+    tvec = numpy.zeros((3, 1), dtype=numpy.float64)
+
+    projected, _ = cv2.projectPoints(
+        points,
+        rvec,
+        tvec,
+        CAMERA_MATRIX,
+        DISTORTION_COEFFICIENTS
+    )
+
+    return (
+        round(float(projected[0, 0, 0])),
+        round(float(projected[0, 0, 1]))
+    )
+
+
 def main():
 
     webcam = cv2.VideoCapture(0)
@@ -295,11 +318,16 @@ def main():
 
         if red_center != None and green_center != None and blue_center != None and not (red_center == green_center and green_center == blue_center):
 
-            ball_position: tuple[float, float, float] = get_ball_position(red_center, green_center, blue_center)
+            jig_position: tuple[float, float, float] = get_ball_position(red_center, green_center, blue_center)
 
-            position_text: str = f"x: {ball_position[0]:.2f}, y: {ball_position[1]:.2f}, z: {ball_position[2]:.2f}"
+            position_text: str = f"x: {jig_position[0]:.2f}, y: {jig_position[1]:.2f}, z: {jig_position[2]:.2f}"
             cv2.putText(frame_copy, position_text, BOTTOM_TEXT_START_COORDINATES, FONT, FONT_SCALE, RED_TEXT_COLOR, TEXT_THICKNESS, TEXT_LINE_TYPE, TEXT_IS_BOTTOM_LEFT_ORIGIN)
-            print(f"x: {ball_position[0]:2.2f}, y: {ball_position[1]:2.2f}, z: {ball_position[2]:.2f}")
+
+            camera_position: tuple[int, int] = world_position_to_camera_coord(jig_position)
+            cv2.circle(frame_copy, camera_position, CIRCLE_RADIUS, WHITE_CIRCLE_COLOR, CIRCLE_THICKNESS)
+
+
+            print(f"x: {jig_position[0]:2.2f}, y: {jig_position[1]:2.2f}, z: {jig_position[2]:.2f}")
 
         else:
             print("Jig not found")
