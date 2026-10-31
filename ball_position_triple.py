@@ -319,7 +319,7 @@ def main():
 
         ########################
 
-        if red_center != None and green_center != None and blue_center != None and not (red_center == green_center and green_center == blue_center):
+        if red_center != None and green_center != None and blue_center != None and not (red_center == green_center) and not (green_center == blue_center) and not (red_center == blue_center):
 
             jig_position: tuple[float, float, float] = get_ball_position(red_center, green_center, blue_center)
 
